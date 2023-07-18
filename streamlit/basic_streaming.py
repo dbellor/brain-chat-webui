@@ -1,11 +1,13 @@
 from input_model.input_model import InputModel
 from central_model.central_model import CentralModel
 from output_model.output_model import OutputModel
+from fine_tuner import FineTuner
 import streamlit as st
 
 input_model = InputModel()
 central_model = CentralModel()
 output_model = OutputModel()
+fine_tuner = FineTuner()
 
 if "messages" not in st.session_state:
     st.session_state["messages"] = ["How can I help you?"]
@@ -20,3 +22,5 @@ if prompt := st.text_input("Enter your message"):
     processed_response = output_model.process(response)
     st.session_state.messages.append(processed_response)
 
+if st.button("Train Evaluation Models"):
+    fine_tuner.train()
