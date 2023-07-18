@@ -1,6 +1,7 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, AdamW
 from torch.utils.data import Dataset, DataLoader
 import torch
+from sklearn.model_selection import train_test_split
 
 class FineTuner:
     def __init__(self, model_name='gpt2', device='cuda'):
@@ -46,3 +47,21 @@ class DataFrameDataset(Dataset):
         inputs = self.tokenizer.encode(row['message'], return_tensors='pt')
         labels = inputs.clone()
         return inputs, labels
+
+# Load the data
+df = pd.read_csv('model_interactions.csv')
+
+# Split the data into a training set and a test set
+train_df, test_df = train_test_split(df, test_size=0.2)
+
+# Initialize the fine tuners
+fine_tuner1 = FineTuner()
+fine_tuner2 = FineTuner()
+
+# Train the evaluation models
+fine_tuner1.train(train_df)
+fine_tuner2.train(train_df)
+
+# Save the trained models
+fine_tuner1.model.save_pretrained('evaluation_model_1')
+fine_tuner2.model.save_pretrained('evaluation_model_2')
