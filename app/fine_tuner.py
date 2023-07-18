@@ -1,6 +1,7 @@
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, AdamW
 from torch.utils.data import Dataset, DataLoader
 import torch
+import os
 from sklearn.model_selection import train_test_split
 
 class FineTuner:
@@ -48,6 +49,13 @@ class DataFrameDataset(Dataset):
         labels = inputs.clone()
         return inputs, labels
 
+# Check if the file exists
+if not os.path.exists('model_interactions.csv'):
+    # If the file does not exist, create it
+    # This will create an empty file, you might want to add some default data to it
+    with open('model_interactions.csv', 'w') as f:
+        f.write('timestamp,model,message\n')
+
 # Load the data
 df = pd.read_csv('model_interactions.csv')
 
@@ -65,3 +73,4 @@ fine_tuner2.train(train_df)
 # Save the trained models
 fine_tuner1.model.save_pretrained('evaluation_model_1')
 fine_tuner2.model.save_pretrained('evaluation_model_2')
+
