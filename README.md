@@ -19,19 +19,22 @@ chat_app
 │   requirements.txt - Lists the Python packages that the project depends on.
 │
 └───app
+│   │   data_handler.py - Handles data operations including reading and writing to the user data 
+│   │   fine_tuner.py - Contains the FineTuner class for fine-tuning the GPT models.
 │   │   main.py - The main Python script that runs the chat app.
-│   │
-│   └───models
-│       │   pretrained_model.pth - Contains the pretrained weights for the GPT model.
 │   
 └───streamlit
-    │   basic_streaming.py - Contains the Streamlit app that interfaces with the GPT model.
+|   │   basic_streaming.py - Contains the Streamlit app that interfaces with the GPT model.
 │
 └───input_model
-    │   input_model.py - Contains the code for the input model, which processes user input.
+|   │   input_model.py - Contains the code for the input model, which processes user input.
 │
+└───evaluation_model
+|   │   evaluation_model_1.py - Contains the code for the first evaluation model.
+|   │   evaluation_model_2.py - Contains the code for the second evaluation model.
+|
 └───central_model
-    │   central_model.py - Contains the code for the central model, which generates responses.
+|   │   central_model.py - Contains the code for the central model, which generates responses.
 │
 └───output_model
     │   output_model.py - Contains the code for the output model, which processes the responses.
@@ -44,4 +47,4 @@ chat_app
 
 ## Usage
 
-Enter your message in the text input field and press Enter. The app will display a response from the GPT model.
+Enter your user ID and message in the text input fields and press Enter. The app will display a response from the GPT model. You can also add and remove users, and view the list of users.

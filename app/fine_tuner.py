@@ -6,8 +6,9 @@ import pandas as pd
 from transformers import GPT2Tokenizer, GPT2LMHeadModel, AdamW, get_linear_schedule_with_warmup
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset, DataLoader
+
 class FineTuner:
-    def __init__(self, model_name='gpt2', device='cuda'):
+    def __init__(self, model_name='gpt2', device='cpu'):
         self.tokenizer = GPT2Tokenizer.from_pretrained(model_name)
         self.model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
         self.device = device
@@ -63,87 +64,31 @@ class DataFrameDataset(Dataset):
         labels = inputs.clone()
         return inputs, labels
 
-# Check if the file exists
-if not os.path.exists('model_interactions.csv'):
-    # Create a default file with necessary columns
-    with open('model_interactions.csv', 'w') as f:
-        f.write('timestamp,model,message\n')
+def fine_tune():
+    # Check if the file exists
+    if not os.path.exists('model_interactions.csv'):
+        # Create a default file with necessary columns
+        with open('model_interactions.csv', 'w') as f:
+            f.write('timestamp,model,message\n')
 
-# Load the data
-try:
-    df = pd.read_csv('model_interactions.csv')
-except Exception as e:
-    logging.error(f'An error occurred while loading the data: {e}')
-    raise e
+    # Load the data
+    try:
+        df = pd.read_csv('model_interactions.csv')
+    except Exception as e:
+        logging.error(f'An error occurred while loading the data: {e}')
+        raise e
 
-# Split the data into a training set and a test set
-train_df, test_df = train_test_split(df, test_size=0.2)
+    # Split the data into a training set and a test set
+    train_df, test_df = train_test_split(df, test_size=0.2)
 
-# Initialize the fine tuners
-fine_tuner1 = FineTuner()
-fine_tuner2 = FineTuner()
+    # Initialize the fine tuners
+    fine_tuner1 = FineTuner()
+    fine_tuner2 = FineTuner()
 
-# Train the evaluation models
-fine_tuner1.train(train_df)
-fine_tuner2.train(train_df)
+    # Train the evaluation models
+    fine_tuner1.train(train_df)
+    fine_tuner2.train(train_df)
 
-# Evaluate and save the trained models
-fine_tuner1.evaluate()
-fine_tuner2.evaluate()
-
-# Split the data into a training set and a test set
-train_df, test_df = train_test_split(df, test_size=0.2, random_state=42)
-
-# Initialize the fine tuners
-fine_tuner1 = FineTuner()
-fine_tuner2 = FineTuner()
-
-# Train the evaluation models
-fine_tuner1.train(train_df)
-fine_tuner2.train(train_df)
-
-# Evaluate and save the trained models
-fine_tuner1.evaluate()
-fine_tuner2.evaluate()
-# Initialize the fine tuners
-fine_tuner1 = FineTuner()
-fine_tuner2 = FineTuner()
-
-# Train the evaluation models
-fine_tuner1.train(train_df)
-fine_tuner2.train(train_df)
-
-# Evaluate and save the trained models
-fine_tuner1.evaluate()
-fine_tuner2.evaluate()        # For example, you might want to add some default data to it
-with open('model_interactions.csv', 'w') as f:
-    f.write('timestamp,model,message\n')
-
-# Load the data
-try:
-    df = load_data('model_interactions.csv')
-except Exception as e:
-    logging.error(f'An error occurred while loading the data: {e}')
-    sys.exit(1)
-
-
-# Split the data into a training set and a test set
-train_df, test_df = train_test_split(df, test_size=0.2)
-
-# Initialize the fine tuners
-fine_tuner1 = FineTuner()
-fine_tuner2 = FineTuner()
-
-# Train the evaluation models
-fine_tuner1.train(train_df)
-fine_tuner2.train(train_df)
-
-# Evaluate and save the trained models
-try:
+    # Evaluate and save the trained models
     fine_tuner1.evaluate()
-except Exception as e:
-    logging.error(f'An error occurred while evaluating fine_tuner1: {e}')
-try:
     fine_tuner2.evaluate()
-except Exception as e:
-    logging.error(f'An error occurred while evaluating fine_tuner2: {e}')
